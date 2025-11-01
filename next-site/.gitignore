@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Vercel
+.vercel
+
+# Env
+.env*
+
+# OS
+.DS_Store

@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-background text-primary font-sans antialiased; }
+}
+
+@layer components {
+  .container-px { @apply px-6 sm:px-8 lg:px-12; }
+  .section-title { @apply text-xs uppercase tracking-[0.2em] font-semibold text-gray-500 dark:text-gray-400; }
+  .prose-link { @apply underline underline-offset-4 decoration-accent/40 hover:decoration-accent; }
+}
