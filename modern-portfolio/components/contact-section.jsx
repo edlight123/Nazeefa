@@ -7,8 +7,8 @@ export default function ContactSection() {
 
   const handleEmailClick = () => {
     const email = 'nazeefa.ahm@gmail.com';
-    // Try to open email client
-    window.location.href = `mailto:${email}`;
+    // Open Gmail compose in a new tab
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
     
     // Also copy to clipboard as fallback
     if (navigator.clipboard) {
