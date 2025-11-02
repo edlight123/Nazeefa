@@ -237,8 +237,6 @@ export default function Page() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="mailto:nazeefa.ahm@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

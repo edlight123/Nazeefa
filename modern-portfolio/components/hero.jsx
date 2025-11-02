@@ -62,19 +62,13 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <a 
-                href="mailto:nazeefa.ahm@gmail.com" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-900/30 hover:-translate-y-0.5 transition-all duration-300"
-              >
-                Get in touch
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-              
-              <div className="flex items-center gap-4">
+          <a 
+            href="mailto:nazeefa.ahm@gmail.com" 
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-800 text-cream hover:bg-slate-800 dark:hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-xl rounded-full"
+          >
+            <span className="font-medium tracking-wide">Get in touch</span>
+            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+          </a>              <div className="flex items-center gap-4">
                 <a 
                   href="https://www.linkedin.com/in/nazeefa-ahmed/" 
                   target="_blank" 
