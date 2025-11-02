@@ -16,15 +16,24 @@ export default function Hero() {
 
   const handleEmailClick = (e) => {
     const email = 'nazeefa.ahm@gmail.com';
-    // Open Gmail compose in a new tab
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
     
-    // Also copy to clipboard as fallback
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(email).then(() => {
-        setShowCopied(true);
-        setTimeout(() => setShowCopied(false), 3000);
-      });
+    // Check if device is mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // On mobile: use mailto to open default email app
+      window.location.href = `mailto:${email}`;
+    } else {
+      // On desktop: open Gmail compose in a new tab
+      window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
+      
+      // Also copy to clipboard as fallback
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email).then(() => {
+          setShowCopied(true);
+          setTimeout(() => setShowCopied(false), 3000);
+        });
+      }
     }
   };
 
