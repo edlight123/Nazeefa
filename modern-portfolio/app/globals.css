@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-geist-sans: 'Inter', system-ui, sans-serif;
+  --font-geist-mono: 'Monaco', 'Courier New', monospace;
+  color-scheme: light dark;
+}
+
+@layer base {
+  html { 
+    scroll-behavior: smooth;
+    @apply antialiased;
+  }
+  
+  body { 
+    @apply bg-cream dark:bg-charcoal text-slate-900 dark:text-slate-50 font-sans;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .container-px { 
+    @apply px-6 sm:px-10 lg:px-16 xl:px-20; 
+  }
+  
+  .section-title { 
+    @apply text-[0.6875rem] uppercase tracking-[0.15em] font-semibold text-slate-500 dark:text-slate-400 mb-8;
+  }
+  
+  .card {
+    @apply bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-2xl transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50 hover:border-slate-300/50 dark:hover:border-slate-600/50 hover:-translate-y-1;
+  }
+  
+  .glass {
+    @apply bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/20 dark:border-slate-700/30;
+  }
+  
+  .link-animated {
+    @apply relative inline-block transition-colors duration-200;
+  }
+  
+  .link-animated::after {
+    @apply content-[''] absolute left-0 -bottom-1 w-0 h-[2px] bg-ocean-500 transition-all duration-300;
+  }
+  
+  .link-animated:hover::after {
+    @apply w-full;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
