@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Nazeefa Ahmed — Reporter • Researcher • Photographer',
-  description: 'New York–based multimedia reporter and student at the Craig Newark Graduate School of Journalism.',
+  description: 'New York–based multimedia reporter and student at the Craig Newmark Graduate School of Journalism.',
   metadataBase: new URL('https://nazeefaahmed.com'),
   openGraph: {
     title: 'Nazeefa Ahmed',
@@ -24,6 +24,20 @@ import Footer from '../components/footer';
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('theme') || 'light';
+                if (theme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `
+          }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           <Header />
