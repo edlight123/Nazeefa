@@ -64,6 +64,8 @@ export default function Hero() {
             <div className="flex flex-wrap items-center gap-4">
               <a 
                 href="mailto:nazeefa.ahm@gmail.com" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-900/30 hover:-translate-y-0.5 transition-all duration-300"
               >
                 Get in touch
