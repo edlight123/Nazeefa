@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Hero from '../components/hero';
+import ContactSection from '../components/contact-section';
 
 const bylines = [
   {
@@ -225,29 +226,7 @@ export default function Page() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 lg:py-32" id="contact">
-        <div className="max-w-4xl mx-auto container-px">
-          <div className="text-center card p-12 lg:p-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-              Let's collaborate
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
-              Available for freelance assignments, collaborations, and storytelling opportunities.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="mailto:nazeefa.ahm@gmail.com"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                nazeefa.ahm@gmail.com
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ContactSection />
     </main>
   );
 }

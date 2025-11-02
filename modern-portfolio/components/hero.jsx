@@ -12,6 +12,21 @@ const ArrowRight = ({ className }) => (
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showCopied, setShowCopied] = useState(false);
+
+  const handleEmailClick = (e) => {
+    const email = 'nazeefa.ahm@gmail.com';
+    // Try to open email client
+    window.location.href = `mailto:${email}`;
+    
+    // Also copy to clipboard as fallback
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(email).then(() => {
+        setShowCopied(true);
+        setTimeout(() => setShowCopied(false), 3000);
+      });
+    }
+  };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -69,13 +84,23 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-          <a 
-            href="mailto:nazeefa.ahm@gmail.com" 
+          <button 
+            onClick={handleEmailClick}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-800 text-cream hover:bg-slate-800 dark:hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-xl rounded-full"
           >
             <span className="font-medium tracking-wide">Get in touch</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-          </a>              <div className="flex items-center gap-4">
+          </button>
+          
+          {showCopied && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="px-4 py-2 bg-ocean-500 text-white text-sm rounded-lg shadow-lg"
+            >
+              ✓ Email copied to clipboard!
+            </motion.div>
+          )}              <div className="flex items-center gap-4">
                 <a 
                   href="https://www.linkedin.com/in/nazeefa-ahmed/" 
                   target="_blank" 
