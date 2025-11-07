@@ -108,37 +108,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Photography Section */}
-      <section className="py-24 lg:py-32 bg-slate-50/50 dark:bg-slate-900/30" id="photos">
-        <div className="max-w-7xl mx-auto container-px">
-          <div className="mb-12">
-            <h2 className="section-title">Photography</h2>
-            <p className="text-3xl lg:text-4xl font-bold tracking-tight max-w-2xl">
-              Visual stories from the field
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {photos.map((src, idx) => (
-              <div
-                key={src}
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-pointer"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <Image
-                  src={src}
-                  alt="Photography by Nazeefa Ahmed"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Media Section */}
       <section className="py-24 lg:py-32">
         <div className="max-w-7xl mx-auto container-px">
