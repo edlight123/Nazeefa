@@ -225,30 +225,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Social/TikTok Section */}
-      <section className="py-24 lg:py-32 bg-slate-50/50 dark:bg-slate-900/30">
-        <div className="max-w-4xl mx-auto container-px">
-          <div className="mb-12 text-center">
-            <h2 className="section-title">Social Media</h2>
-            <p className="text-3xl lg:text-4xl font-bold tracking-tight">
-              Stories for every platform
-            </p>
-          </div>
-
-          <div className="card p-8">
-            <div className="aspect-[9/16] max-w-sm mx-auto rounded-xl overflow-hidden shadow-2xl">
-              <iframe
-                src="https://www.tiktok.com/embed/7537326976789400862"
-                className="w-full h-full"
-                allowFullScreen
-                scrolling="no"
-                allow="encrypted-media;"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Section */}
       <ContactSection />
     </main>
