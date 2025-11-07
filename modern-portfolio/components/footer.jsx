@@ -28,8 +28,21 @@ export default function Footer() {
             </a>
           </div>
           
-          <div className="text-sm text-slate-600 dark:text-slate-400">
-            © {new Date().getFullYear()} Nazeefa Ahmed. All rights reserved.
+          <div className="text-sm text-slate-600 dark:text-slate-400 text-center md:text-right">
+            <div className="mb-1">
+              © {new Date().getFullYear()} Nazeefa Ahmed. All rights reserved.
+            </div>
+            <div className="text-xs">
+              Created by{' '}
+              <a 
+                href="https://www.edlight.org/labs" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-ocean-500 dark:hover:text-ocean-400 transition-colors underline"
+              >
+                EdLight Labs
+              </a>
+            </div>
           </div>
         </div>
       </div>
