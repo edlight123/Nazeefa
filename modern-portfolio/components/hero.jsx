@@ -62,7 +62,7 @@ export default function Hero() {
       <div className="absolute top-20 right-10 w-72 h-72 bg-ocean-400/10 dark:bg-ocean-500/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-slate-300/20 dark:bg-slate-700/10 rounded-full blur-3xl" />
 
-      <div className="relative w-full max-w-7xl mx-auto container-px py-32 lg:py-40">
+      <div className="relative w-full max-w-7xl mx-auto container-px py-16 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Text content */}
           <motion.div
