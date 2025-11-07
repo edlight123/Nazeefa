@@ -89,7 +89,7 @@ export default function Hero() {
             
             <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl">
               Reporter, researcher, and photographer at the Craig Newmark Graduate School of Journalism. 
-              Covering science, health, and campus affairs.
+              Covering science, health, and business.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
