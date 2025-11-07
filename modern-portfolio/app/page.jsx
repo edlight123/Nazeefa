@@ -109,7 +109,7 @@ export default function Page() {
       </section>
 
       {/* Media Section */}
-      <section className="py-24 lg:py-32">
+      <section className="py-12 lg:py-16">
         <div className="max-w-7xl mx-auto container-px">
           <div className="mb-12">
             <h2 className="section-title">Audio & Print</h2>
