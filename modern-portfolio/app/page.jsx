@@ -155,7 +155,7 @@ export default function Page() {
                 The Gauntlet — January 2025 Issue
               </p>
               <a
-                href="https://nazeefaahmed.com/wp-content/uploads/2025/05/gauntlet-jan-2025.pdf"
+                href="/gauntlet-jan-2025.pdf"
                 target="_blank"
                 rel="noopener"
                 className="inline-flex items-center gap-2 text-ocean-500 font-medium hover:gap-3 transition-all"
