@@ -1,62 +1,23 @@
 import Image from 'next/image';
 import Hero from '../components/hero';
 import ContactSection from '../components/contact-section';
+import { DataStore } from '../lib/dataStoreVercel';
 
-const bylines = [
-  {
-    title: "Genome-wide study makes 'quantum leap' in understanding stuttering",
-    href: 'https://www.science.org/content/article/genome-wide-study-makes-quantum-leap-understanding-stuttering',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: 'Why do some moms have more boys than girls—or vice versa? New study provides clues',
-    href: 'https://www.science.org/content/article/why-do-some-moms-have-more-boys-girls-or-vice-versa-new-study-provides-clues',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: "Comprehensive look at U.S. children's health finds 'steady decline'",
-    href: 'https://www.science.org/content/article/comprehensive-look-u-s-children-s-health-finds-steady-decline',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: "Using electrons to make art, this scientist's biology images grace rock albums and stamps",
-    href: 'https://www.science.org/content/article/using-electrons-make-art-scientist-s-biology-images-grace-rock-albums-and-stamps',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: 'Giant virus with record-long tail discovered in Pacific Ocean',
-    href: 'https://www.science.org/content/article/giant-virus-record-long-tail-discovered-pacific-ocean',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: 'Social media attacks on public health agencies are eroding trust',
-    href: 'https://www.science.org/content/article/social-media-attacks-public-health-agencies-are-eroding-trust',
-    outlet: 'Science Magazine',
-    date: '2025',
-  },
-  {
-    title: "University of Calgary's Aquatic Centre struggling with aging infrastructure",
-    href: 'https://thegauntlet.ca/2025/01/31/university-of-calgarys-aquatic-centre-struggling-with-aging-infrastructure-and-high-demand-mirroring-citywide-pool-challenges/',
-    outlet: 'The Gauntlet',
-    date: '2025',
-  },
-];
+// Get content from data store
+async function getContent() {
+  try {
+    const articles = DataStore.getArticles();
+    const photos = DataStore.getPhotos();
+    return { articles, photos };
+  } catch (error) {
+    console.error('Error loading content:', error);
+    return { articles: [], photos: [] };
+  }
+}
 
-const photos = [
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4415.jpg',
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4402.jpg',
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4502.jpg',
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4487.jpg',
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4516.jpg',
-  'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4434.jpg',
-];
+export default async function Page() {
+  const { articles, photos } = await getContent();
 
-export default function Page() {
   return (
     <main>
       <Hero />
@@ -72,7 +33,7 @@ export default function Page() {
           </div>
 
           <div className="grid gap-6 lg:gap-8">
-            {bylines.map((article, idx) => (
+            {articles.map((article, idx) => (
               <a
                 key={article.href}
                 href={article.href}
@@ -205,15 +166,15 @@ export default function Page() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {photos.map((src, idx) => (
+            {photos.map((photo, idx) => (
               <div
-                key={src}
+                key={photo.id}
                 className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-pointer"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <Image
-                  src={src}
-                  alt="Photography by Nazeefa Ahmed"
+                  src={photo.src}
+                  alt={photo.alt}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
