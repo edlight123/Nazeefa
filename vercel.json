@@ -1,6 +1,8 @@
 {
-  "buildCommand": "cd modern-portfolio && npm install && npm run build",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd modern-portfolio && npm run build",
   "devCommand": "cd modern-portfolio && npm run dev",
   "installCommand": "cd modern-portfolio && npm install",
-  "outputDirectory": "modern-portfolio/.next"
+  "outputDirectory": "modern-portfolio/.next",
+  "framework": "nextjs"
 }
