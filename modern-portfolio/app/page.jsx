@@ -7,37 +7,37 @@ const bylines = [
     title: "Genome-wide study makes 'quantum leap' in understanding stuttering",
     href: 'https://www.science.org/content/article/genome-wide-study-makes-quantum-leap-understanding-stuttering',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: 'Why do some moms have more boys than girls—or vice versa? New study provides clues',
     href: 'https://www.science.org/content/article/why-do-some-moms-have-more-boys-girls-or-vice-versa-new-study-provides-clues',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: "Comprehensive look at U.S. children's health finds 'steady decline'",
     href: 'https://www.science.org/content/article/comprehensive-look-u-s-children-s-health-finds-steady-decline',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: "Using electrons to make art, this scientist's biology images grace rock albums and stamps",
     href: 'https://www.science.org/content/article/using-electrons-make-art-scientist-s-biology-images-grace-rock-albums-and-stamps',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: 'Giant virus with record-long tail discovered in Pacific Ocean',
     href: 'https://www.science.org/content/article/giant-virus-record-long-tail-discovered-pacific-ocean',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: 'Social media attacks on public health agencies are eroding trust',
     href: 'https://www.science.org/content/article/social-media-attacks-public-health-agencies-are-eroding-trust',
     outlet: 'Science Magazine',
-    date: '2024',
+    date: '2025',
   },
   {
     title: "University of Calgary's Aquatic Centre struggling with aging infrastructure",
@@ -204,7 +204,7 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {photos.map((src, idx) => (
               <div
                 key={src}
@@ -215,7 +215,9 @@ export default function Page() {
                   src={src}
                   alt="Photography by Nazeefa Ahmed"
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  priority={idx < 3}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl" />
