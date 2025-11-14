@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd modern-portfolio && npm install && npm run build",
+  "devCommand": "cd modern-portfolio && npm run dev",
+  "installCommand": "cd modern-portfolio && npm install",
+  "outputDirectory": "modern-portfolio/.next"
+}
