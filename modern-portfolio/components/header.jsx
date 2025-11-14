@@ -44,9 +44,6 @@ export default function Header() {
           <Link href="#contact" className="text-sm font-medium link-animated hidden sm:inline-block">
             Contact
           </Link>
-          <Link href="/admin" className="text-xs font-medium text-slate-500 hover:text-ocean-500 transition-colors">
-            Admin
-          </Link>
           
           <button
             onClick={toggleTheme}
