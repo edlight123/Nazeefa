@@ -4,5 +4,16 @@
   "devCommand": "cd modern-portfolio && npm run dev",
   "installCommand": "cd modern-portfolio && npm install",
   "outputDirectory": "modern-portfolio/.next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "functions": {
+    "modern-portfolio/app/api/**/*.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin/login"
+    }
+  ]
 }
