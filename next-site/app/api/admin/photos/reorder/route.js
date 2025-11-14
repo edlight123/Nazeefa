@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DataStore } from '../../../../../lib/dataStore';
+import { DataStore } from '../../../../../lib/dataStoreVercel';
 import { getTokenFromRequest, verifyToken } from '../../../../../lib/auth';
 
 async function verifyAuth(request) {

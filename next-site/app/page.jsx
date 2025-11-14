@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Hero from '../components/hero';
-import { DataStore } from '../lib/dataStore';
+import { DataStore } from '../lib/dataStoreVercel';
 
 // Get content from data store
 async function getContent() {

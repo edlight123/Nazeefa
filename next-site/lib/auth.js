@@ -5,17 +5,22 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'nazeefa-admin-secret-key-2025'
 );
 
-// Default admin credentials (change in production)
+// Admin credentials from environment variables
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'nazeefa';
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || 
-  bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+
+// Hash the password on each request (since we can't store the hash in serverless)
+async function getPasswordHash() {
+  return bcrypt.hashSync(ADMIN_PASSWORD, 10);
+}
 
 export async function verifyCredentials(username, password) {
   if (username !== ADMIN_USERNAME) {
     return false;
   }
   
-  return bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+  const passwordHash = await getPasswordHash();
+  return bcrypt.compare(password, passwordHash);
 }
 
 export async function createToken(payload) {
