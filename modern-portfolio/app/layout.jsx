@@ -18,8 +18,7 @@ export const metadata = {
 
 import './globals.css';
 import { ThemeProvider } from '../components/theme-provider';
-import Header from '../components/header';
-import Footer from '../components/footer';
+import LayoutWrapper from '../components/layout-wrapper';
 
 export default function RootLayout({ children }) {
   return (
@@ -40,9 +39,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ThemeProvider>
-          <Header />
-          {children}
-          <Footer />
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
         </ThemeProvider>
       </body>
     </html>
