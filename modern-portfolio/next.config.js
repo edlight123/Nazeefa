@@ -6,7 +6,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'nazeefaahmed.com' },
       { protocol: 'https', hostname: 's2.wp.com' },
       { protocol: 'https', hostname: 's0.wp.com' },
-      { protocol: 'https', hostname: 's1.wp.com' }
+      { protocol: 'https', hostname: 's1.wp.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' }
     ]
   }
 };

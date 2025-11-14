@@ -72,37 +72,37 @@ const defaultArticles = [
 const defaultPhotos = [
   {
     id: '1',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4415.jpg',
+    src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 0
   },
   {
     id: '2',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4402.jpg',
+    src: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 1
   },
   {
     id: '3',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4502.jpg',
+    src: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 2
   },
   {
     id: '4',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4487.jpg',
+    src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 3
   },
   {
     id: '5',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4516.jpg',
+    src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 4
   },
   {
     id: '6',
-    src: 'https://nazeefaahmed.com/wp-content/uploads/2025/05/img_4434.jpg',
+    src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop',
     alt: 'Photography by Nazeefa Ahmed',
     order: 5
   }
