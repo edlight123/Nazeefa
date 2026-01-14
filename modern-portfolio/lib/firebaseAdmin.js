@@ -2,6 +2,15 @@ import { getApps, initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 
+function normalizeBucketName(value) {
+  if (!value) return value;
+  let v = String(value).trim();
+  if (v.startsWith('gs://')) v = v.slice('gs://'.length);
+  v = v.replace(/^https?:\/\/storage\.googleapis\.com\//, '');
+  v = v.replace(/\/+$/, '');
+  return v;
+}
+
 function parseFirebaseServiceAccount() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   if (!raw) {
@@ -35,9 +44,11 @@ export function getFirebaseAdminApp() {
 
   if (getApps().length) return getApps()[0];
 
-  const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
+  const storageBucket = normalizeBucketName(process.env.FIREBASE_STORAGE_BUCKET);
   if (!storageBucket) {
-    throw new Error('Missing FIREBASE_STORAGE_BUCKET env var (e.g. your-project.appspot.com).');
+    throw new Error(
+      'Missing FIREBASE_STORAGE_BUCKET env var (expected bucket name like your-project.appspot.com).'
+    );
   }
 
   return initializeApp({

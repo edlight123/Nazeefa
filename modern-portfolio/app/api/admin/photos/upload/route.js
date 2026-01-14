@@ -86,6 +86,24 @@ export async function POST(request) {
     return NextResponse.json({ success: true, photo: newPhoto });
   } catch (error) {
     console.error('Error uploading photo:', error);
+
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
+    const isMissingBucket =
+      error?.code === 404 ||
+      /specified bucket does not exist/i.test(String(error?.message || ''));
+
+    if (isMissingBucket) {
+      return NextResponse.json(
+        {
+          error: 'Firebase Storage bucket does not exist',
+          configuredBucket: bucketName || null,
+          hint:
+            'Enable Firebase Storage for the project and set FIREBASE_STORAGE_BUCKET to the exact bucket name (e.g. your-project.appspot.com). Do not include gs://'
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ error: 'Failed to upload photo' }, { status: 500 });
   }
 }
