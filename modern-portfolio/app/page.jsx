@@ -169,7 +169,7 @@ export default async function Page() {
             {photos.map((photo, idx) => (
               <div
                 key={photo.id}
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-pointer"
+                className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-pointer"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <Image

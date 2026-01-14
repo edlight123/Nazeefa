@@ -27,7 +27,7 @@ const DraggablePhoto = ({ photo, index, movePhoto, onDelete }) => {
   return (
     <div
       ref={(node) => drag(drop(node))}
-      className={`group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-move transition-all ${
+      className={`group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-move transition-all ${
         isDragging ? 'opacity-50 scale-95' : 'hover:shadow-md'
       }`}
     >
@@ -59,8 +59,8 @@ const DraggablePhoto = ({ photo, index, movePhoto, onDelete }) => {
 };
 
 const PhotoForm = ({ onUploaded, onCancel }) => {
-  const [alt, setAlt] = useState('Photography by Nazeefa Ahmed');
   const [file, setFile] = useState(null);
+  const [alt, setAlt] = useState('Photography by Nazeefa Ahmed');
   const [previewUrl, setPreviewUrl] = useState('');
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [uploading, setUploading] = useState(false);

@@ -65,7 +65,7 @@
   
   /* Mobile-specific image improvements */
   @media (max-width: 640px) {
-    .aspect-[4\/3] {
+    .photo-aspect-4-3 {
       @apply relative min-h-[200px];
     }
     
