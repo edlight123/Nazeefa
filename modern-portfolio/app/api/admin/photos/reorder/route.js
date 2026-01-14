@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DataStore } from '../../../../../lib/dataStoreVercel';
+import { DataStore } from '../../../../../lib/dataStoreFirebase';
 import { getTokenFromRequest, verifyToken } from '../../../../../lib/auth';
 
 async function verifyAuth(request) {
@@ -31,7 +31,7 @@ export async function POST(request) {
       );
     }
     
-    DataStore.reorderPhotos(orderedIds);
+    await DataStore.reorderPhotos(orderedIds);
     
     return NextResponse.json({ 
       success: true, 

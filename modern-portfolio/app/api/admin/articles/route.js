@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DataStore } from '../../../../lib/dataStoreVercel';
+import { DataStore } from '../../../../lib/dataStoreFirebase';
 import { getTokenFromRequest, verifyToken } from '../../../../lib/auth';
 
 async function verifyAuth(request) {
@@ -14,7 +14,7 @@ async function verifyAuth(request) {
 
 export async function GET() {
   try {
-    const articles = DataStore.getArticles();
+    const articles = await DataStore.getArticles();
     return NextResponse.json({ articles });
   } catch (error) {
     console.error('Error fetching articles:', error);
@@ -36,7 +36,7 @@ export async function POST(request) {
     }
 
     const articleData = await request.json();
-    const newArticle = DataStore.addArticle(articleData);
+    const newArticle = await DataStore.addArticle(articleData);
     
     return NextResponse.json({ 
       success: true, 
@@ -62,7 +62,7 @@ export async function PUT(request) {
     }
 
     const { id, ...updateData } = await request.json();
-    const updatedArticle = DataStore.updateArticle(id, updateData);
+    const updatedArticle = await DataStore.updateArticle(id, updateData);
     
     if (!updatedArticle) {
       return NextResponse.json(
@@ -104,7 +104,7 @@ export async function DELETE(request) {
       );
     }
     
-    DataStore.deleteArticle(id);
+    await DataStore.deleteArticle(id);
     
     return NextResponse.json({ 
       success: true, 

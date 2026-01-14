@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DataStore } from '../../../../lib/dataStoreVercel';
+import { DataStore } from '../../../../lib/dataStoreFirebase';
 import { getTokenFromRequest, verifyToken } from '../../../../lib/auth';
 
 async function verifyAuth(request) {
@@ -14,7 +14,7 @@ async function verifyAuth(request) {
 
 export async function GET() {
   try {
-    const photos = DataStore.getPhotos();
+    const photos = await DataStore.getPhotos();
     return NextResponse.json({ photos });
   } catch (error) {
     console.error('Error fetching photos:', error);
@@ -36,7 +36,7 @@ export async function POST(request) {
     }
 
     const photoData = await request.json();
-    const newPhoto = DataStore.addPhoto(photoData);
+    const newPhoto = await DataStore.addPhoto(photoData);
     
     return NextResponse.json({ 
       success: true, 
@@ -71,7 +71,7 @@ export async function DELETE(request) {
       );
     }
     
-    DataStore.deletePhoto(id);
+    await DataStore.deletePhoto(id);
     
     return NextResponse.json({ 
       success: true, 

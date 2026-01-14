@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { DataStore } from '../../../lib/dataStoreVercel';
+import { DataStore } from '../../../lib/dataStoreFirebase';
 
 export async function GET() {
   try {
-    const articles = DataStore.getArticles();
-    const photos = DataStore.getPhotos();
+    const articles = await DataStore.getArticles();
+    const photos = await DataStore.getPhotos();
     
     return NextResponse.json({ 
       success: true,

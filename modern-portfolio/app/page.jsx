@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Hero from '../components/hero';
 import ContactSection from '../components/contact-section';
-import { DataStore } from '../lib/dataStoreVercel';
+import { DataStore } from '../lib/dataStoreFirebase';
 
 // Get content from data store
 async function getContent() {
   try {
-    const articles = DataStore.getArticles();
-    const photos = DataStore.getPhotos();
+    const articles = await DataStore.getArticles();
+    const photos = await DataStore.getPhotos();
     return { articles, photos };
   } catch (error) {
     console.error('Error loading content:', error);
