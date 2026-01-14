@@ -58,15 +58,79 @@ const DraggablePhoto = ({ photo, index, movePhoto, onDelete }) => {
   );
 };
 
-const PhotoForm = ({ onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState({
-    src: '',
-    alt: 'Photography by Nazeefa Ahmed',
-  });
+const PhotoForm = ({ onUploaded, onCancel }) => {
+  const [alt, setAlt] = useState('Photography by Nazeefa Ahmed');
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl('');
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const resetError = () => setError('');
+
+  const validateAndSetFile = (nextFile) => {
+    resetError();
+    if (!nextFile) return;
+
+    if (!nextFile.type?.startsWith('image/')) {
+      setError('Please choose an image file (jpg, png, webp, etc.).');
+      return;
+    }
+
+    const maxBytes = 10 * 1024 * 1024;
+    if (nextFile.size > maxBytes) {
+      setError('Image is too large (max 10MB).');
+      return;
+    }
+
+    setFile(nextFile);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    resetError();
+
+    if (!file) {
+      setError('Please drop or choose an image file.');
+      return;
+    }
+
+    try {
+      setUploading(true);
+
+      const body = new FormData();
+      body.append('file', file);
+      body.append('alt', alt);
+      body.append('originalName', file.name);
+
+      const response = await fetch('/api/admin/photos/upload', {
+        method: 'POST',
+        body,
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.error || 'Failed to upload photo');
+      }
+
+      const data = await response.json();
+      onUploaded(data.photo);
+    } catch (err) {
+      setError(err?.message || 'Failed to upload photo');
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -74,63 +138,114 @@ const PhotoForm = ({ onSubmit, onCancel }) => {
       <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-4">
         Add New Photo
       </h3>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Image URL
+            Image File
           </label>
-          <input
-            type="url"
-            value={formData.src}
-            onChange={(e) => setFormData(prev => ({ ...prev, src: e.target.value }))}
-            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
-            placeholder="https://example.com/image.jpg"
-            required
-          />
+
+          <div
+            onDragEnter={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOver(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOver(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOver(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOver(false);
+              const dropped = e.dataTransfer?.files?.[0];
+              validateAndSetFile(dropped);
+            }}
+            className={`rounded-xl border-2 border-dashed p-5 transition-colors bg-white dark:bg-slate-800 ${
+              isDraggingOver
+                ? 'border-ocean-500 bg-ocean-50/50 dark:bg-ocean-950/20'
+                : 'border-slate-300 dark:border-slate-600'
+            }`}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
+                  Drag & drop an image here
+                </p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Or choose a file (max 10MB)
+                </p>
+              </div>
+
+              <label className="inline-flex items-center justify-center cursor-pointer bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg font-medium transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => validateAndSetFile(e.target.files?.[0])}
+                />
+                Choose File
+              </label>
+            </div>
+
+            {file && (
+              <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 truncate">
+                Selected: <span className="font-medium">{file.name}</span>
+              </p>
+            )}
+          </div>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Alt Text
           </label>
           <input
             type="text"
-            value={formData.alt}
-            onChange={(e) => setFormData(prev => ({ ...prev, alt: e.target.value }))}
+            value={alt}
+            onChange={(e) => setAlt(e.target.value)}
             className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
             required
           />
         </div>
-        
-        {formData.src && (
+
+        {previewUrl && (
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Preview
             </label>
-            <div className="relative aspect-[4/3] w-32 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800">
-              <Image
-                src={formData.src}
-                alt={formData.alt}
-                fill
-                className="object-cover"
-                sizes="128px"
-              />
+            <div className="relative aspect-[4/3] w-48 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800">
+              <Image src={previewUrl} alt={alt} fill className="object-cover" sizes="192px" />
             </div>
           </div>
         )}
-        
+
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+            {error}
+          </div>
+        )}
+
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            className="bg-ocean-500 hover:bg-ocean-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            disabled={uploading}
+            className="bg-ocean-500 hover:bg-ocean-600 disabled:opacity-60 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
-            Add Photo
+            {uploading ? 'Uploading…' : 'Upload Photo'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg font-medium transition-colors"
+            disabled={uploading}
+            className="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-60 disabled:cursor-not-allowed text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg font-medium transition-colors"
           >
             Cancel
           </button>
@@ -186,18 +301,8 @@ export default function PhotoManager() {
 
   const handleSubmit = async (formData) => {
     try {
-      const response = await fetch('/api/admin/photos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        fetchPhotos();
-        setShowForm(false);
-      } else {
-        alert('Failed to add photo');
-      }
+      await fetchPhotos();
+      setShowForm(false);
     } catch (error) {
       console.error('Failed to add photo:', error);
       alert('Failed to add photo');
@@ -252,7 +357,7 @@ export default function PhotoManager() {
 
       {showForm && (
         <PhotoForm
-          onSubmit={handleSubmit}
+          onUploaded={handleSubmit}
           onCancel={() => setShowForm(false)}
         />
       )}

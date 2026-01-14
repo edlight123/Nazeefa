@@ -34,3 +34,10 @@ The admin system also requires:
 - Firestore should have collections: `articles`, `photos`
 - Storage should have objects under: `photos/`
 - `/api/debug` should show content counts and the photo URLs should be storage URLs.
+
+## Admin Photo Upload
+
+The **Admin → Photos** page supports uploading images (drag & drop or file picker).
+
+- Uploads are stored in Firebase Storage.
+- A document is created in Firestore collection `photos`, including `src` (a public URL) and `storagePath` (for deletes).

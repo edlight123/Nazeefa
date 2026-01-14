@@ -29,6 +29,10 @@ function parseFirebaseServiceAccount() {
 }
 
 export function getFirebaseAdminApp() {
+  if (process.env.FIREBASE_DISABLED === '1') {
+    throw new Error('Firebase disabled');
+  }
+
   if (getApps().length) return getApps()[0];
 
   const storageBucket = process.env.FIREBASE_STORAGE_BUCKET;

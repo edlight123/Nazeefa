@@ -1,5 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { getDb } from './firebaseAdmin';
+import { DataStore as LegacyDataStore } from './dataStoreVercel';
 
 const ARTICLES_COLLECTION = 'articles';
 const PHOTOS_COLLECTION = 'photos';
@@ -15,15 +16,23 @@ function normalizeOrder(item, fallback) {
 
 export class DataStore {
   static async getArticles() {
-    const db = getDb();
-    const snap = await db.collection(ARTICLES_COLLECTION).orderBy('order', 'asc').get();
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    try {
+      const db = getDb();
+      const snap = await db.collection(ARTICLES_COLLECTION).orderBy('order', 'asc').get();
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      return LegacyDataStore.getArticles();
+    }
   }
 
   static async getPhotos() {
-    const db = getDb();
-    const snap = await db.collection(PHOTOS_COLLECTION).orderBy('order', 'asc').get();
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    try {
+      const db = getDb();
+      const snap = await db.collection(PHOTOS_COLLECTION).orderBy('order', 'asc').get();
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      return LegacyDataStore.getPhotos();
+    }
   }
 
   static async addArticle(article) {

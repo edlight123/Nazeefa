@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { DataStore } from '../../../../lib/dataStoreFirebase';
 import { getTokenFromRequest, verifyToken } from '../../../../lib/auth';
+import { getBucket } from '../../../../lib/firebaseAdmin';
 
 async function verifyAuth(request) {
   const token = getTokenFromRequest(request);
@@ -71,6 +72,16 @@ export async function DELETE(request) {
       );
     }
     
+    const existing = (await DataStore.getPhotos()).find((p) => p.id === id);
+    if (existing?.storagePath) {
+      try {
+        const bucket = getBucket();
+        await bucket.file(existing.storagePath).delete({ ignoreNotFound: true });
+      } catch (e) {
+        console.warn('Failed to delete storage object for photo:', e);
+      }
+    }
+
     await DataStore.deletePhoto(id);
     
     return NextResponse.json({ 

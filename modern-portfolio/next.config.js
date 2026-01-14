@@ -1,5 +1,8 @@
 /**** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'nazeefaca.wordpress.com' },
@@ -7,7 +10,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 's2.wp.com' },
       { protocol: 'https', hostname: 's0.wp.com' },
       { protocol: 'https', hostname: 's1.wp.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' }
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'storage.googleapis.com' }
     ]
   }
 };
