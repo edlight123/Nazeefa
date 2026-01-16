@@ -3,6 +3,8 @@ import Hero from '../components/hero';
 import ContactSection from '../components/contact-section';
 import { DataStore } from '../lib/dataStoreFirebase';
 
+export const dynamic = 'force-dynamic';
+
 // Get content from data store
 async function getContent() {
   try {
