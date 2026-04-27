@@ -100,6 +100,9 @@ export class DataStore {
     const ref = await db.collection(PHOTOS_COLLECTION).add({
       src: photo.src ?? '',
       alt: photo.alt ?? 'Photography by Nazeefa Ahmed',
+      type: photo.type === 'video' ? 'video' : 'image',
+      videoKind: photo.type === 'video' ? photo.videoKind ?? 'upload' : null,
+      embedUrl: photo.type === 'video' ? photo.embedUrl ?? null : null,
       storagePath: photo.storagePath ?? null,
       order,
       createdAt: FieldValue.serverTimestamp(),

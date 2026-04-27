@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ArticleManager from '../../../components/admin/ArticleManager';
-import PhotoManager from '../../../components/admin/PhotoManager';
+import MediaManager from '../../../components/admin/MediaManager';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('articles');
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
                     : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
-                Photos
+                Media
               </button>
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         {/* Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {activeTab === 'articles' && <ArticleManager />}
-          {activeTab === 'photos' && <PhotoManager />}
+          {activeTab === 'photos' && <MediaManager />}
         </main>
       </div>
     </DndProvider>

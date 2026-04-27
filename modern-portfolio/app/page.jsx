@@ -161,31 +161,55 @@ export default async function Page() {
       <section className="py-24 lg:py-32" id="photos">
         <div className="max-w-7xl mx-auto container-px">
           <div className="mb-12">
-            <h2 className="section-title">Photography</h2>
+            <h2 className="section-title">Photography & Video</h2>
             <p className="text-3xl lg:text-4xl font-bold tracking-tight max-w-2xl">
               Visual stories from the field
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {photos.map((photo, idx) => (
-              <div
-                key={photo.id}
-                className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 cursor-pointer"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  priority={idx < 3}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl" />
-              </div>
-            ))}
+            {photos.map((photo, idx) => {
+              const isVideo = photo.type === 'video';
+              const embedUrl = isVideo ? photo.embedUrl || photo.src : '';
+
+              return (
+                <div
+                  key={photo.id}
+                  className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800"
+                  style={{ animationDelay: `${idx * 100}ms` }}
+                >
+                  {isVideo ? (
+                    embedUrl ? (
+                      <iframe
+                        src={embedUrl}
+                        title={photo.alt || 'Embedded video'}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={photo.src}
+                        className="w-full h-full object-cover"
+                        controls
+                        playsInline
+                        preload="metadata"
+                      />
+                    )
+                  ) : (
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      priority={idx < 3}
+                    />
+                  )}
+                  <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
