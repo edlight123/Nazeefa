@@ -6,7 +6,7 @@ import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
 
 const toFileLabel = (src = '') => {
   try {
@@ -54,6 +54,18 @@ const parseEmbedUrl = (value) => {
       if (path.startsWith('/embed/')) return parsed.toString();
       const match = path.match(/\/video\/(\d+)/);
       return match?.[1] ? `https://www.tiktok.com/embed/v2/${match[1]}` : '';
+    }
+
+    if (host.includes('instagram.com')) {
+      if (path.endsWith('/embed') || path.endsWith('/embed/')) {
+        return parsed.toString();
+      }
+      const match = path.match(/\/(p|reel|reels|tv)\/([^/]+)/);
+      if (match?.[2]) {
+        const kind = match[1] === 'reels' ? 'reel' : match[1];
+        return `https://www.instagram.com/${kind}/${match[2]}/embed`;
+      }
+      return '';
     }
 
     return path.includes('/embed/') ? parsed.toString() : '';
@@ -181,7 +193,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
 
     const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
     if (nextFile.size > maxBytes) {
-      setError(isVideo ? 'Video is too large (max 50MB).' : 'Image is too large (max 10MB).');
+      setError(isVideo ? 'Video is too large (max 500MB).' : 'Image is too large (max 10MB).');
       return;
     }
 
@@ -219,7 +231,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
   const createEmbeddedVideo = async () => {
     const embedUrl = parseEmbedUrl(embedInput);
     if (!embedUrl) {
-      setError('Please paste a valid embeddable URL (YouTube, Vimeo, TikTok, or direct embed link).');
+      setError('Please paste a valid embeddable URL (YouTube, Vimeo, TikTok, Instagram, or direct embed link).');
       return;
     }
 
@@ -369,7 +381,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
                     Drag & drop a {mediaType === 'video' ? 'video' : 'photo'} here
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-400">
-                    Or choose a file (max {mediaType === 'video' ? '50MB' : '10MB'})
+                    Or choose a file (max {mediaType === 'video' ? '500MB' : '10MB'})
                   </p>
                 </div>
 
@@ -405,7 +417,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
               required
             />
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Supports YouTube, Vimeo, TikTok, and direct embed links.
+              Supports YouTube, Vimeo, TikTok, Instagram (post/reel), and direct embed links.
             </p>
           </div>
         )}

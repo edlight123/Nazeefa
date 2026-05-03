@@ -75,6 +75,18 @@ function extractVideoEmbedUrl(value) {
     }
   }
 
+  if (host.includes('instagram.com')) {
+    if (path.endsWith('/embed') || path.endsWith('/embed/')) {
+      return parsed.toString();
+    }
+
+    const match = path.match(/\/(p|reel|reels|tv)\/([^/]+)/);
+    if (match?.[2]) {
+      const kind = match[1] === 'reels' ? 'reel' : match[1];
+      return `https://www.instagram.com/${kind}/${match[2]}/embed`;
+    }
+  }
+
   if (path.includes('/embed/')) {
     return parsed.toString();
   }
@@ -124,7 +136,7 @@ export async function POST(request) {
         return NextResponse.json(
           {
             error:
-              'Please provide a valid embeddable video URL (YouTube, Vimeo, TikTok, or direct embed URL).'
+              'Please provide a valid embeddable video URL (YouTube, Vimeo, TikTok, Instagram, or direct embed URL).'
           },
           { status: 400 }
         );

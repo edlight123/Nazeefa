@@ -4,7 +4,7 @@ import { getTokenFromRequest, verifyToken } from '../../../../../lib/auth';
 import { getBucket } from '../../../../../lib/firebaseAdmin';
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
 
 async function verifyAuth(request) {
   const token = getTokenFromRequest(request);
@@ -33,7 +33,7 @@ function getFileValidation(mediaType) {
     return {
       prefix: 'video/',
       maxBytes: MAX_VIDEO_BYTES,
-      maxLabel: '50MB',
+      maxLabel: '500MB',
       folder: 'videos',
       fallbackExt: 'mp4'
     };

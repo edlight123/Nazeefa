@@ -88,8 +88,7 @@ export default function Hero() {
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl">
-              Reporter, researcher, and photographer at the Craig Newmark Graduate School of Journalism. 
-              Covering business, science, and politics.
+              Business reporter at the Craig Newmark Graduate School of Journalism.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -98,7 +97,6 @@ export default function Hero() {
             className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-800 text-cream hover:bg-slate-800 dark:hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-xl rounded-full"
           >
             <span className="font-medium tracking-wide">Get in touch</span>
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
           
           {showCopied && (
@@ -156,10 +154,10 @@ export default function Hero() {
           >
             <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-slate-900/60">
               <Image
-                src="https://nazeefaca.wordpress.com/wp-content/uploads/2025/05/nazeefa-headshot-1.jpg"
+                src="/nazeefa-headshot.jpg"
                 alt="Nazeefa Ahmed"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
                 priority
               />
               <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-3xl" />

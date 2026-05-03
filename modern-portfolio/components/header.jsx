@@ -39,7 +39,7 @@ export default function Header() {
             Work
           </Link>
           <Link href="#photos" className="text-sm font-medium link-animated hidden sm:inline-block">
-            Photos
+            Videos
           </Link>
           <Link href="#contact" className="text-sm font-medium link-animated hidden sm:inline-block">
             Contact
