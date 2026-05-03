@@ -154,7 +154,7 @@ export default function Hero() {
           >
             <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-slate-900/60">
               <Image
-                src="/nazeefa-headshot.jpg"
+                src="/nazeefa-headshot.png"
                 alt="Nazeefa Ahmed"
                 fill
                 className="object-cover object-top"

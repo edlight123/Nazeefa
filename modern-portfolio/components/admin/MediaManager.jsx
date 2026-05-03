@@ -5,8 +5,8 @@ import { useDrag, useDrop } from 'react-dnd';
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 2 * 1024 * 1024 * 1024;
 
 const toFileLabel = (src = '') => {
   try {
@@ -193,7 +193,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
 
     const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
     if (nextFile.size > maxBytes) {
-      setError(isVideo ? 'Video is too large (max 500MB).' : 'Image is too large (max 10MB).');
+      setError(isVideo ? 'Video is too large (max 2GB).' : 'Image is too large (max 25MB).');
       return;
     }
 
@@ -208,23 +208,57 @@ const MediaForm = ({ onUploaded, onCancel }) => {
       return;
     }
 
-    const body = new FormData();
-    body.append('file', file);
-    body.append('alt', alt);
-    body.append('mediaType', mediaType);
-    body.append('originalName', file.name);
-
-    const response = await fetch('/api/admin/photos/upload', {
+    // Step 1: ask the server for a short-lived signed URL.
+    const signRes = await fetch('/api/admin/photos/sign-upload', {
       method: 'POST',
-      body,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type || (mediaType === 'video' ? 'video/mp4' : 'image/jpeg'),
+        size: file.size,
+        mediaType,
+      }),
     });
 
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data?.error || 'Failed to upload media');
+    if (!signRes.ok) {
+      const data = await signRes.json().catch(() => ({}));
+      throw new Error(data?.error || 'Failed to start upload');
     }
 
-    const data = await response.json();
+    const { uploadUrl, storagePath, contentType } = await signRes.json();
+
+    // Step 2: PUT bytes straight to Firebase Storage. Vercel never sees them,
+    // so we are not bound by the 4.5MB / 50MB serverless body limits.
+    const putRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': contentType },
+      body: file,
+    });
+
+    if (!putRes.ok) {
+      const text = await putRes.text().catch(() => '');
+      throw new Error(
+        `Upload failed (${putRes.status}). ${text || 'Check Firebase Storage CORS configuration.'}`
+      );
+    }
+
+    // Step 3: finalize — make the object public and persist a Firestore doc.
+    const finalizeRes = await fetch('/api/admin/photos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: mediaType,
+        storagePath,
+        alt,
+      }),
+    });
+
+    if (!finalizeRes.ok) {
+      const data = await finalizeRes.json().catch(() => ({}));
+      throw new Error(data?.error || 'Upload finished but saving the record failed');
+    }
+
+    const data = await finalizeRes.json();
     onUploaded(data.photo);
   };
 
@@ -381,7 +415,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
                     Drag & drop a {mediaType === 'video' ? 'video' : 'photo'} here
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-400">
-                    Or choose a file (max {mediaType === 'video' ? '500MB' : '10MB'})
+                    Or choose a file (max {mediaType === 'video' ? '2GB' : '25MB'})
                   </p>
                 </div>
 

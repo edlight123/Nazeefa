@@ -154,6 +154,43 @@ export async function POST(request) {
       return NextResponse.json({ success: true, photo: newMedia });
     }
 
+    // Finalize a direct-to-Firebase upload: client already PUT bytes to a
+    // signed URL, now we make the object public and create the photo doc.
+    if (payload?.storagePath) {
+      const { getBucket } = await import('../../../../lib/firebaseAdmin');
+      const bucket = getBucket();
+      const object = bucket.file(payload.storagePath);
+
+      const [exists] = await object.exists();
+      if (!exists) {
+        return NextResponse.json(
+          { error: 'Uploaded file not found in storage' },
+          { status: 400 }
+        );
+      }
+
+      try {
+        await object.makePublic();
+      } catch (err) {
+        console.warn('makePublic failed (continuing):', err?.message);
+      }
+
+      const publicUrl = object.publicUrl();
+      const isUploadedVideo = payload?.type === 'video';
+
+      const newMedia = await DataStore.addPhoto({
+        src: publicUrl,
+        alt:
+          payload?.alt ||
+          (isUploadedVideo ? 'Video by Nazeefa Ahmed' : 'Photography by Nazeefa Ahmed'),
+        type: isUploadedVideo ? 'video' : 'image',
+        videoKind: isUploadedVideo ? 'upload' : null,
+        storagePath: payload.storagePath
+      });
+
+      return NextResponse.json({ success: true, photo: newMedia });
+    }
+
     const imageUrl = ensureHttpUrl(payload?.src || payload?.url);
     if (!imageUrl) {
       return NextResponse.json(
