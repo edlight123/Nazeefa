@@ -21,6 +21,7 @@ export class DataStore {
       const snap = await db.collection(ARTICLES_COLLECTION).orderBy('order', 'asc').get();
       return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     } catch (e) {
+      console.error('Falling back to legacy articles store:', e.message);
       return LegacyDataStore.getArticles();
     }
   }
@@ -31,6 +32,7 @@ export class DataStore {
       const snap = await db.collection(PHOTOS_COLLECTION).orderBy('order', 'asc').get();
       return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     } catch (e) {
+      console.error('Falling back to legacy photos store:', e.message);
       return LegacyDataStore.getPhotos();
     }
   }

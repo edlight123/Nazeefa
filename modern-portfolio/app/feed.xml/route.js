@@ -1,10 +1,16 @@
+import { DataStore } from '../../lib/dataStoreFirebase';
+
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
 export async function GET() {
-  const items = [
-    {
-      title: "Genome-wide study makes 'quantum leap' in understanding stuttering",
-      link: 'https://www.science.org/content/article/genome-wide-study-makes-quantum-leap-understanding-stuttering',
-    },
-  ];
+  const articles = await DataStore.getArticles();
 
   const xml = `<?xml version="1.0" encoding="UTF-8" ?>
   <rss version="2.0">
@@ -12,12 +18,13 @@ export async function GET() {
       <title>Nazeefa Ahmed</title>
       <link>https://nazeefaahmed.com</link>
       <description>Reporter. Researcher. Photographer.</description>
-      ${items
+      ${articles
         .map(
-          (i) => `
+          (a) => `
       <item>
-        <title>${i.title}</title>
-        <link>${i.link}</link>
+        <title>${escapeXml(a.title)}</title>
+        <link>${escapeXml(a.href)}</link>
+        <source>${escapeXml(a.outlet)}</source>
       </item>`
         )
         .join('')}
