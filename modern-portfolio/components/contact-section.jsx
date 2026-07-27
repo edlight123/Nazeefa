@@ -1,32 +1,9 @@
 "use client";
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEmailContact } from '../lib/useEmailContact';
 
 export default function ContactSection() {
-  const [showCopied, setShowCopied] = useState(false);
-
-  const handleEmailClick = () => {
-    const email = 'nazeefa.ahm@gmail.com';
-    
-    // Check if device is mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // On mobile: use mailto to open default email app
-      window.location.href = `mailto:${email}`;
-    } else {
-      // On desktop: open Gmail compose in a new tab
-      window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
-      
-      // Also copy to clipboard as fallback
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(email).then(() => {
-          setShowCopied(true);
-          setTimeout(() => setShowCopied(false), 3000);
-        });
-      }
-    }
-  };
+  const { showCopied, handleEmailClick } = useEmailContact();
 
   return (
     <section id="contact" className="py-24 bg-gradient-to-b from-slate-50 to-cream dark:from-slate-900 dark:to-charcoal">
@@ -43,7 +20,7 @@ export default function ContactSection() {
           <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
             Available for freelance assignments, collaborations, and storytelling opportunities.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleEmailClick}
               className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
@@ -80,7 +57,7 @@ export default function ContactSection() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute mt-24 px-4 py-2 bg-ocean-500 text-white text-sm rounded-lg shadow-lg"
+                className="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-4 py-2 bg-ocean-500 text-white text-sm rounded-lg shadow-lg whitespace-nowrap"
               >
                 ✓ Email copied to clipboard!
               </motion.div>

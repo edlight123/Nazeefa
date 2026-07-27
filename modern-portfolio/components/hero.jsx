@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useEmailContact } from '../lib/useEmailContact';
 
 // Arrow icon component
 const ArrowRight = ({ className }) => (
@@ -12,36 +13,16 @@ const ArrowRight = ({ className }) => (
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [showCopied, setShowCopied] = useState(false);
-
-  const handleEmailClick = (e) => {
-    const email = 'nazeefa.ahm@gmail.com';
-    
-    // Check if device is mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // On mobile: use mailto to open default email app
-      window.location.href = `mailto:${email}`;
-    } else {
-      // On desktop: open Gmail compose in a new tab
-      window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
-      
-      // Also copy to clipboard as fallback
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(email).then(() => {
-          setShowCopied(true);
-          setTimeout(() => setShowCopied(false), 3000);
-        });
-      }
-    }
-  };
+  const { showCopied, handleEmailClick } = useEmailContact();
 
   useEffect(() => {
+    // Parallax is driven from JS, so the reduced-motion CSS can't switch it off.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const handleMouseMove = (e) => {
-      setMousePosition({ 
+      setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20 
+        y: (e.clientY / window.innerHeight - 0.5) * 20
       });
     };
     window.addEventListener('mousemove', handleMouseMove);
@@ -154,7 +135,7 @@ export default function Hero() {
           >
             <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-slate-900/60">
               <Image
-                src="/nazeefa-headshot.png"
+                src="/nazeefa-headshot.jpg"
                 alt="Nazeefa Ahmed"
                 fill
                 className="object-cover object-top"
