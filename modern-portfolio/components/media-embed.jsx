@@ -158,33 +158,38 @@ function InstagramFrame({ src, title }) {
 
 /* ------------------------------------------------------------------- TikTok */
 
-// TikTok's embed does NOT reflow to the width you give it: its container is
-// `width: 540px` fixed (min-width 540 aside, see the embed page's own CSS), so
-// rendering it in a narrower tile makes the layout overflow and leaves white
-// gaps that no crop value can remove. Instead we give the iframe its full
-// natural width and scale the whole thing down to the tile — the embed lays
-// itself out exactly as TikTok intends, then we scale and crop.
+// TikTok's embed does NOT reflow to the width you give it: its column is pinned
+// by the embed's own CSS to `width/min-width/max-width: 325px`. Render it in a
+// wider iframe and the column just sits centred with white either side, which is
+// why no crop value alone can clean it up. Instead the iframe is given exactly
+// that column width and the whole thing is scaled to the tile — the embed lays
+// itself out as TikTok intends, then we scale and crop.
 //
-// The header height comes from the embed's own stylesheet, where the video area
-// carries `padding-top: 81px`. Both values below are in the embed's own
-// (unscaled) pixels.
-const TIKTOK_NATURAL_WIDTH = 540;
-const TIKTOK_HEADER_PX = 81;
-const TIKTOK_VIDEO_ASPECT = 9 / 16; // confirmed via oEmbed: 576x1024 thumbnail
+// Inside the column the video area is the first thing on the page, inset by the
+// card's 1px border, and is a true 9:16 box spanning the full column width. It
+// is NOT preceded by a header. Everything after it — the "Watch now" call to
+// action, then the author, caption and sound rows — is stacked *below* the
+// video, and its height moves with the caption, so it is cropped by sizing the
+// tile to the video alone rather than by subtracting a fixed footer.
+//
+// Measured against the live embed; all values are in the embed's own (unscaled)
+// pixels.
+const TIKTOK_COLUMN_WIDTH = 325;
+const TIKTOK_BORDER_PX = 1;
+const TIKTOK_VIDEO_WIDTH = TIKTOK_COLUMN_WIDTH - TIKTOK_BORDER_PX * 2;
+const TIKTOK_VIDEO_ASPECT = 9 / 16;
 
-// The iframe height has to be exact, not generous. TikTok's video area is
-// `position:absolute; height:100%`, so it stretches to fill whatever height the
-// iframe gets, and the video inside is `object-fit: contain` — give the box any
-// height other than a true 9:16 and the video letterboxes and visibly shrinks.
-// So: header + exactly one 9:16 video, nothing more. The caption and action
-// buttons are overlaid on the video by TikTok (as in its own app), not stacked
-// below it, so there is no footer band to leave room for.
+// Room for the chrome below the video so it can never be squeezed back up into
+// the video area. Only has to be generous — every pixel of it is cropped off.
+const TIKTOK_CHROME_BELOW_PX = 280;
+
 function TikTokFrame({ src, title }) {
   const [containerRef, width] = useElementWidth();
 
-  const naturalVideoHeight = TIKTOK_NATURAL_WIDTH / TIKTOK_VIDEO_ASPECT;
-  const naturalFrameHeight = TIKTOK_HEADER_PX + naturalVideoHeight;
-  const scale = width ? width / TIKTOK_NATURAL_WIDTH : null;
+  const naturalVideoHeight = TIKTOK_VIDEO_WIDTH / TIKTOK_VIDEO_ASPECT;
+  const naturalFrameHeight =
+    TIKTOK_BORDER_PX + naturalVideoHeight + TIKTOK_CHROME_BELOW_PX;
+  const scale = width ? width / TIKTOK_VIDEO_WIDTH : null;
   const tileHeight = scale ? Math.round(naturalVideoHeight * scale) : null;
 
   return (
@@ -198,12 +203,12 @@ function TikTokFrame({ src, title }) {
         scrolling="no"
         className="absolute left-0 top-0 border-0"
         style={{
-          width: `${TIKTOK_NATURAL_WIDTH}px`,
+          width: `${TIKTOK_COLUMN_WIDTH}px`,
           height: `${naturalFrameHeight}px`,
-          // Applied right-to-left: shift the header off the top first, then
-          // scale the whole embed down to the tile's width.
+          // Applied right-to-left: pull the card's border off the top and left
+          // first, then scale the video area up to fill the tile's width.
           transform: scale
-            ? `scale(${scale}) translateY(-${TIKTOK_HEADER_PX}px)`
+            ? `scale(${scale}) translate(-${TIKTOK_BORDER_PX}px, -${TIKTOK_BORDER_PX}px)`
             : undefined,
           transformOrigin: '0 0',
           opacity: scale ? 1 : 0,
