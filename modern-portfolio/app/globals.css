@@ -11,16 +11,38 @@
 }
 
 @layer base {
-  html { 
+  html {
     scroll-behavior: smooth;
+    /* Header is position:fixed (out of layout flow), so anchor scrolls need this
+       compensation or the header covers the target section's own heading. */
+    scroll-padding-top: 6rem;
     @apply antialiased;
   }
   
-  body { 
+  body {
     @apply bg-cream dark:bg-charcoal text-slate-900 dark:text-slate-50 font-sans;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Keyboard users had no visible focus ring anywhere on the site. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ocean-500 ring-offset-2 ring-offset-cream dark:ring-offset-charcoal rounded-sm;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
