@@ -46,11 +46,15 @@ function useElementWidth() {
 //
 // Subtracting a guessed footer height never works reliably — the footer grows
 // when a caption wraps. Instead we exploit the fact that Instagram re-crops all
-// feed media to one of exactly three aspect ratios: knowing the tile width, the
-// media height can only be one of three values, so we snap to the closest. The
-// chrome estimate only has to be good enough to pick between candidates that
-// are far apart, not exact.
-const IG_MEDIA_ASPECTS = [1.91, 1, 0.8]; // landscape, square, portrait (w/h)
+// feed media to a small set of aspect ratios: knowing the tile width, the media
+// height can only be one of a few values, so we snap to the closest. The chrome
+// estimate only has to be good enough to pick between candidates, not exact.
+//
+// 16:9 is in this list because reels cut for broadcast come back from the embed
+// in a true widescreen frame rather than one of the three feed-photo ratios.
+// Without it they snapped to 1.91 and the tile came out ~7% short, slicing the
+// chyron off the bottom of every news clip.
+const IG_MEDIA_ASPECTS = [1.91, 16 / 9, 1, 0.8]; // landscape, widescreen, square, portrait (w/h)
 const IG_PORTRAIT_ASPECT = 0.8;
 
 // Vertical video is shot 9:16 but Instagram shows feed posts in a 4:5 frame, so
