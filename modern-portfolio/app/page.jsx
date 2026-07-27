@@ -42,7 +42,11 @@ export default async function Page() {
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-6">
             {photos.map((photo, idx) => {
               const isVideo = photo.type === 'video';
-              const embedUrl = isVideo ? photo.embedUrl || photo.src : '';
+              // Only a genuine embed URL routes to MediaEmbed. This used to fall
+              // back to photo.src, which meant an uploaded clip still counted as
+              // an embed and was played inside an iframe — the <video> branch
+              // below could never be reached.
+              const embedUrl = isVideo ? photo.embedUrl : null;
 
               return (
                 <div
@@ -55,26 +59,32 @@ export default async function Page() {
                     // platform from its URL and crops that platform's chrome,
                     // so anything added via Admin → Media fits in on its own.
                     <MediaEmbed src={embedUrl} title={photo.alt || 'Embedded video'} />
+                  ) : isVideo ? (
+                    // A clip we host ourselves. Safari refuses to play the
+                    // third-party embeds, and this path has no third party in
+                    // it. Height is left to the file: the browser already knows
+                    // the intrinsic size, so unlike the embeds there is no
+                    // aspect ratio to guess at and nothing to crop.
+                    <div className="relative rounded-2xl overflow-hidden bg-slate-900">
+                      <video
+                        src={photo.src}
+                        className="block w-full h-auto"
+                        controls
+                        playsInline
+                        preload="metadata"
+                      />
+                      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
+                    </div>
                   ) : (
                     <div className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800">
-                      {isVideo ? (
-                        <video
-                          src={photo.src}
-                          className="w-full h-full object-cover"
-                          controls
-                          playsInline
-                          preload="metadata"
-                        />
-                      ) : (
-                        <Image
-                          src={photo.src}
-                          alt={photo.alt}
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          priority={idx < 3}
-                        />
-                      )}
+                      <Image
+                        src={photo.src}
+                        alt={photo.alt}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        priority={idx < 3}
+                      />
                       <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
                     </div>
                   )}
