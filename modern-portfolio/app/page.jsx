@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Hero from '../components/hero';
+import MediaEmbed from '../components/media-embed';
 import ContactSection from '../components/contact-section';
 import { DataStore } from '../lib/dataStoreFirebase';
 
@@ -23,6 +24,66 @@ export default async function Page() {
   return (
     <main>
       <Hero />
+
+      {/* Photography Section */}
+      <section className="py-24 lg:py-32" id="photos">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="mb-12">
+            <h2 className="section-title">Photography & Video</h2>
+            <p className="text-3xl lg:text-4xl font-bold tracking-tight max-w-2xl">
+              Visual stories from the field
+            </p>
+          </div>
+
+          {/* Multi-column rather than grid: the media here is a mix of portrait,
+              square and landscape, and a grid makes every row as tall as its
+              tallest tile — leaving dead space under the shorter ones. Columns
+              pack each tile directly beneath the previous one instead. */}
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-6">
+            {photos.map((photo, idx) => {
+              const isVideo = photo.type === 'video';
+              const embedUrl = isVideo ? photo.embedUrl || photo.src : '';
+
+              return (
+                <div
+                  key={photo.id}
+                  className="mb-4 sm:mb-6 break-inside-avoid"
+                  style={{ animationDelay: `${idx * 100}ms` }}
+                >
+                  {isVideo && embedUrl ? (
+                    // Every embed goes through one component that detects the
+                    // platform from its URL and crops that platform's chrome,
+                    // so anything added via Admin → Media fits in on its own.
+                    <MediaEmbed src={embedUrl} title={photo.alt || 'Embedded video'} />
+                  ) : (
+                    <div className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800">
+                      {isVideo ? (
+                        <video
+                          src={photo.src}
+                          className="w-full h-full object-cover"
+                          controls
+                          playsInline
+                          preload="metadata"
+                        />
+                      ) : (
+                        <Image
+                          src={photo.src}
+                          alt={photo.alt}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          priority={idx < 3}
+                        />
+                      )}
+                      <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* Featured Work Section */}
       <section className="py-24 lg:py-32" id="work">
@@ -129,87 +190,6 @@ export default async function Page() {
                 </svg>
               </a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Social/TikTok Section */}
-      <section className="py-24 lg:py-32 bg-slate-50/50 dark:bg-slate-900/30">
-        <div className="max-w-4xl mx-auto container-px">
-          <div className="mb-12 text-center">
-            <h2 className="section-title">Social Media</h2>
-            <p className="text-3xl lg:text-4xl font-bold tracking-tight">
-              Stories for every platform
-            </p>
-          </div>
-
-          <div className="card p-8">
-            <div className="aspect-[9/16] max-w-sm mx-auto rounded-xl overflow-hidden shadow-2xl">
-              <iframe
-                src="https://www.tiktok.com/embed/7537326976789400862"
-                className="w-full h-full"
-                allowFullScreen
-                scrolling="no"
-                allow="encrypted-media;"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Photography Section */}
-      <section className="py-24 lg:py-32" id="photos">
-        <div className="max-w-7xl mx-auto container-px">
-          <div className="mb-12">
-            <h2 className="section-title">Photography & Video</h2>
-            <p className="text-3xl lg:text-4xl font-bold tracking-tight max-w-2xl">
-              Visual stories from the field
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {photos.map((photo, idx) => {
-              const isVideo = photo.type === 'video';
-              const embedUrl = isVideo ? photo.embedUrl || photo.src : '';
-
-              return (
-                <div
-                  key={photo.id}
-                  className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800"
-                  style={{ animationDelay: `${idx * 100}ms` }}
-                >
-                  {isVideo ? (
-                    embedUrl ? (
-                      <iframe
-                        src={embedUrl}
-                        title={photo.alt || 'Embedded video'}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        src={photo.src}
-                        className="w-full h-full object-cover"
-                        controls
-                        playsInline
-                        preload="metadata"
-                      />
-                    )
-                  ) : (
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      priority={idx < 3}
-                    />
-                  )}
-                  <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>
