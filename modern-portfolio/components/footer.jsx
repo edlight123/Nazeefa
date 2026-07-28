@@ -29,15 +29,7 @@ export default function Footer() {
           </div>
 
           <div className="meta md:text-right">
-            © {new Date().getFullYear()} Nazeefa Ahmed ·{' '}
-            <a
-              href="https://www.edlight.org/labs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-rust transition-colors"
-            >
-              EdLight Labs
-            </a>
+            © {new Date().getFullYear()} Nazeefa Ahmed
           </div>
         </div>
       </div>

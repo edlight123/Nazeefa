@@ -12,7 +12,10 @@ const BEATS = [
 export default function Hero() {
   return (
     <header className="max-w-6xl mx-auto container-px pt-28 lg:pt-32">
-      <p className="kicker">New York City</p>
+      {/* Larger and less tightly tracked than the section kickers: at 10px,
+          uppercase mono with wide letterspacing is hard to read, and this is
+          the first line on the page. */}
+      <p className="kicker text-[13px] tracking-[0.12em]">New York City</p>
 
       <h1 className="font-serif text-display-lg font-medium mt-4">Nazeefa Ahmed</h1>
 
