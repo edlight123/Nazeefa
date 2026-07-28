@@ -1,2 +1,8 @@
 .vercel
 .env*
+
+# Brainstorming companion mockups — local design scratch, not part of the site.
+.superpowers/
+
+# Frame grabs from verifying the showreel build.
+reel-frame-*.png
