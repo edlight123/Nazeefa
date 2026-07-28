@@ -1,69 +1,54 @@
 "use client";
-import { motion } from 'framer-motion';
 import { useEmailContact } from '../lib/useEmailContact';
 
 export default function ContactSection() {
   const { showCopied, handleEmailClick } = useEmailContact();
 
   return (
-    <section id="contact" className="py-24 bg-gradient-to-b from-slate-50 to-cream dark:from-slate-900 dark:to-charcoal">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
+    <section id="contact" className="max-w-6xl mx-auto container-px mt-16 pt-16 pb-24 border-t border-ink">
+      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">
+        Contact
+      </p>
+
+      <h2 className="font-serif text-display-md font-medium mt-4">
+        Available for assignments
+        <br />
+        and staff roles.
+      </h2>
+
+      <div className="relative mt-7 flex flex-wrap items-center gap-x-7 gap-y-4">
+        <button onClick={handleEmailClick} className="btn-ink">
+          nazeefa.ahm@gmail.com
+        </button>
+
+        <a
+          href="https://www.linkedin.com/in/nazeefa-ahmed/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link-rust text-[13px] font-medium"
         >
-          <h2 className="text-4xl lg:text-display-md font-bold mb-6 bg-gradient-to-r from-ocean-500 to-ocean-600 bg-clip-text text-transparent">
-            Let's Connect
-          </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-            Available for freelance assignments, collaborations, and storytelling opportunities.
-          </p>
-          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={handleEmailClick}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-full font-semibold shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              Email Me
-            </button>
-            <a
-              href="https://www.linkedin.com/in/nazeefa-ahmed/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              LinkedIn
-            </a>
-            <a
-              href="https://www.instagram.com/nazreports/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-full font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              Instagram
-            </a>
-            
-            {showCopied && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-4 py-2 bg-ocean-500 text-white text-sm rounded-lg shadow-lg whitespace-nowrap"
-              >
-                ✓ Email copied to clipboard!
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
+          LinkedIn
+        </a>
+        <a
+          href="https://www.instagram.com/nazreports/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link-rust text-[13px] font-medium"
+        >
+          Instagram
+        </a>
+        <a
+          href="https://substack.com/@nazeefaahmed"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link-rust text-[13px] font-medium"
+        >
+          Substack
+        </a>
+
+        {showCopied && (
+          <span className="meta animate-fade-in">Email copied</span>
+        )}
       </div>
     </section>
   );

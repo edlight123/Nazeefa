@@ -1,162 +1,39 @@
-"use client";
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { useEmailContact } from '../lib/useEmailContact';
+import HeroReel from './hero-reel';
 
-// Arrow icon component
-const ArrowRight = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-  </svg>
-);
+// The reel leads instead of a headshot: the reporting is on camera, so the work
+// itself should be the first thing a visitor sees moving. The beat strip states
+// the range outright for anyone skimming for whether she covers their patch.
+const BEATS = [
+  { name: 'Housing', note: 'Mortgage & markets' },
+  { name: 'Labor', note: 'Unions & contracts' },
+  { name: 'Science', note: 'Peer-reviewed beat' },
+];
 
 export default function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const { showCopied, handleEmailClick } = useEmailContact();
-
-  useEffect(() => {
-    // Parallax is driven from JS, so the reduced-motion CSS can't switch it off.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient with parallax */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-ocean-500/5 via-transparent to-slate-200/50 dark:from-ocean-500/10 dark:via-transparent dark:to-slate-800/50"
-        style={{
-          transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
-        }}
-      />
-      
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-10 w-72 h-72 bg-ocean-400/10 dark:bg-ocean-500/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-slate-300/20 dark:bg-slate-700/10 rounded-full blur-3xl" />
+    <header className="max-w-6xl mx-auto container-px pt-28 lg:pt-32">
+      <p className="kicker">New York City</p>
 
-      <div className="relative w-full max-w-7xl mx-auto container-px py-16 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Text content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium mb-6"
-            >
-              📍 New York City
-            </motion.div>
-            
-            <h1 className="text-5xl sm:text-6xl lg:text-display-lg font-bold mb-6 tracking-tight">
-              Multimedia
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-ocean-500 to-ocean-600">
-                Journalist
-              </span>
-            </h1>
-            
-            <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl">
-              Business reporter at the Craig Newmark Graduate School of Journalism.
-            </p>
+      <h1 className="font-serif text-display-lg font-medium mt-4">Nazeefa Ahmed</h1>
 
-            <div className="flex flex-wrap items-center gap-4">
-          <button 
-            onClick={handleEmailClick}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-slate-800 text-cream hover:bg-slate-800 dark:hover:bg-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-xl rounded-full"
-          >
-            <span className="font-medium tracking-wide">Get in touch</span>
-          </button>
-          
-          {showCopied && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="px-4 py-2 bg-ocean-500 text-white text-sm rounded-lg shadow-lg"
-            >
-              ✓ Email copied to clipboard!
-            </motion.div>
-          )}              <div className="flex items-center gap-4">
-                <a 
-                  href="https://www.linkedin.com/in/nazeefa-ahmed/" 
-                  target="_blank" 
-                  rel="noopener"
-                  className="p-3 rounded-full glass hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all duration-300 hover:-translate-y-0.5"
-                  aria-label="LinkedIn"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                </a>
-                <a 
-                  href="https://www.instagram.com/nazreports/" 
-                  target="_blank" 
-                  rel="noopener"
-                  className="p-3 rounded-full glass hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all duration-300 hover:-translate-y-0.5"
-                  aria-label="Instagram"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </a>
-                <a 
-                  href="https://substack.com/@nazeefaahmed" 
-                  target="_blank" 
-                  rel="noopener"
-                  className="p-3 rounded-full glass hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all duration-300 hover:-translate-y-0.5"
-                  aria-label="Substack"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </motion.div>
+      <p className="text-[clamp(15px,1.6vw,18px)] text-soft mt-3.5 max-w-[34em] leading-relaxed">
+        Multimedia business reporter covering the economy, on camera and in print.
+      </p>
 
-          {/* Image with frame effect */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative"
-          >
-            <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 dark:shadow-slate-900/60">
-              <Image
-                src="/nazeefa-headshot.jpg"
-                alt="Nazeefa Ahmed"
-                fill
-                className="object-cover object-top"
-                priority
-              />
-              <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-3xl" />
-            </div>
-            
-            {/* Floating badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="absolute -bottom-6 -right-6 glass px-6 py-4 rounded-2xl shadow-xl"
-            >
-              <div className="text-sm font-medium text-slate-600 dark:text-slate-300">Featured in</div>
-              <div className="text-lg font-bold">Science Magazine</div>
-            </motion.div>
-          </motion.div>
-        </div>
+      <div className="flex flex-wrap rule-t rule-b mt-8">
+        {BEATS.map((beat) => (
+          <div key={beat.name} className="py-[18px] pr-8 sm:pr-10">
+            <span className="block font-serif text-[23px] font-semibold leading-none">
+              {beat.name}
+            </span>
+            <span className="meta block mt-1.5 tracking-[0.08em] uppercase">{beat.note}</span>
+          </div>
+        ))}
       </div>
-    </section>
+
+      <div className="mt-9">
+        <HeroReel src="/showreel.mp4" />
+      </div>
+    </header>
   );
 }

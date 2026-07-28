@@ -7,7 +7,19 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Palette lives in globals.css as CSS variables so the dark theme is a
+      // single block of overrides instead of a `dark:` twin on every element.
       colors: {
+        paper: 'var(--paper)',
+        ink: 'var(--ink)',
+        soft: 'var(--soft)',
+        rust: 'var(--rust)',
+        rule: 'var(--rule)',
+        muted: 'var(--muted)',
+        tile: 'var(--tile)',
+
+        // Retained for the admin panel, which is a separate surface and was not
+        // part of this restyle. The public pages use the tokens above.
         cream: '#FFFBF5',
         charcoal: '#1A1A1A',
         slate: {
@@ -29,36 +41,23 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['var(--font-geist-sans)', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-geist-mono)', 'Monaco', 'Courier New', 'monospace'],
+        sans: ['var(--font-sans)'],
+        serif: ['var(--font-serif)'],
+        mono: ['var(--font-mono)'],
       },
       fontSize: {
-        'display-xl': ['5rem', { lineHeight: '1', letterSpacing: '-0.02em' }],
-        'display-lg': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
-        'display-md': ['3rem', { lineHeight: '1.15', letterSpacing: '-0.01em' }],
+        'display-xl': ['clamp(44px, 7.5vw, 78px)', { lineHeight: '1.02', letterSpacing: '-0.022em' }],
+        'display-lg': ['clamp(40px, 7vw, 72px)', { lineHeight: '1.02', letterSpacing: '-0.022em' }],
+        'display-md': ['clamp(30px, 4.5vw, 46px)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
       },
       animation: {
-        'fade-in': 'fadeIn 0.6s ease-out forwards',
-        'slide-up': 'slideUp 0.6s ease-out forwards',
-        'scale-in': 'scaleIn 0.4s ease-out forwards',
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        scaleIn: {
-          '0%': { opacity: '0', transform: 'scale(0.95)' },
-          '100%': { opacity: '1', transform: 'scale(1)' },
-        },
-      },
-      backdropBlur: {
-        xs: '2px',
       },
     },
   },
