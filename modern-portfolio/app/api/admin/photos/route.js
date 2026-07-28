@@ -120,12 +120,16 @@ export async function POST(request) {
     const payload = await request.json();
     const isVideo = payload?.type === 'video';
 
-    if (isVideo) {
+    // A video arrives one of two ways: as an embed URL, or as bytes already PUT
+    // to storage, in which case storagePath is set and the upload branch below
+    // finalizes it. Only the first case is handled here — this used to reject
+    // every non-embed video outright, which made uploading a clip impossible.
+    if (isVideo && !payload?.storagePath) {
       const videoKind = payload?.videoKind === 'embed' ? 'embed' : 'upload';
 
       if (videoKind !== 'embed') {
         return NextResponse.json(
-          { error: 'Only embedded videos can be created from this endpoint' },
+          { error: 'A video needs either an uploaded file or an embed URL' },
           { status: 400 }
         );
       }
@@ -178,6 +182,13 @@ export async function POST(request) {
       const publicUrl = object.publicUrl();
       const isUploadedVideo = payload?.type === 'video';
 
+      // Optional link back to wherever the clip was first published. Dropped
+      // silently if it is not a usable http(s) URL — it is a nicety, not a
+      // reason to fail an upload the visitor already waited through.
+      const sourceUrl = isUploadedVideo
+        ? ensureHttpUrl(payload?.sourceUrl)?.toString() ?? null
+        : null;
+
       const newMedia = await DataStore.addPhoto({
         src: publicUrl,
         alt:
@@ -185,6 +196,7 @@ export async function POST(request) {
           (isUploadedVideo ? 'Video by Nazeefa Ahmed' : 'Photography by Nazeefa Ahmed'),
         type: isUploadedVideo ? 'video' : 'image',
         videoKind: isUploadedVideo ? 'upload' : null,
+        sourceUrl,
         storagePath: payload.storagePath
       });
 

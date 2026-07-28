@@ -94,7 +94,10 @@ const DraggableMedia = ({ media, index, moveMedia, onDelete }) => {
   });
 
   const isVideo = media.type === 'video';
-  const embedUrl = isVideo ? media.embedUrl || media.src : '';
+  // Match the public gallery: decide by videoKind, not by whether some URL
+  // happens to be set. Falling back to media.src here put uploaded clips in an
+  // iframe, so this thumbnail never matched what the site actually rendered.
+  const isEmbed = isVideo && media.videoKind !== 'upload' && Boolean(media.embedUrl);
 
   return (
     <div
@@ -104,9 +107,9 @@ const DraggableMedia = ({ media, index, moveMedia, onDelete }) => {
       }`}
     >
       {isVideo ? (
-        embedUrl ? (
+        isEmbed ? (
           <iframe
-            src={embedUrl}
+            src={media.embedUrl}
             title={media.alt || 'Embedded video'}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -149,6 +152,9 @@ const MediaForm = ({ onUploaded, onCancel }) => {
   const [videoInputMode, setVideoInputMode] = useState('upload');
   const [file, setFile] = useState(null);
   const [embedInput, setEmbedInput] = useState('');
+  // Optional permalink stored alongside an uploaded clip, so the tile can link
+  // back to where it was published without depending on that site to play it.
+  const [sourceInput, setSourceInput] = useState('');
   const [alt, setAlt] = useState('Photography by Nazeefa Ahmed');
   const [previewUrl, setPreviewUrl] = useState('');
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -169,6 +175,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
   useEffect(() => {
     setFile(null);
     setEmbedInput('');
+    setSourceInput('');
     setError('');
     setAlt(mediaType === 'video' ? 'Video by Nazeefa Ahmed' : 'Photography by Nazeefa Ahmed');
   }, [mediaType, videoInputMode]);
@@ -250,6 +257,7 @@ const MediaForm = ({ onUploaded, onCancel }) => {
         type: mediaType,
         storagePath,
         alt,
+        sourceUrl: sourceInput.trim() || undefined,
       }),
     });
 
@@ -452,6 +460,25 @@ const MediaForm = ({ onUploaded, onCancel }) => {
             />
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
               Supports YouTube, Vimeo, TikTok, Instagram (post/reel), and direct embed links.
+            </p>
+          </div>
+        )}
+
+        {mediaType === 'video' && videoInputMode === 'upload' && (
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Original Post URL <span className="font-normal text-slate-500">(optional)</span>
+            </label>
+            <input
+              type="url"
+              value={sourceInput}
+              onChange={(e) => setSourceInput(e.target.value)}
+              placeholder="https://www.instagram.com/reel/..."
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500"
+            />
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              The clip plays from this site, so it works in every browser. Add the
+              link and a &ldquo;Watch on Instagram&rdquo; button appears beneath it.
             </p>
           </div>
         )}

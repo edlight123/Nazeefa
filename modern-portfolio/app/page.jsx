@@ -18,6 +18,26 @@ async function getContent() {
   }
 }
 
+// Label for the link beside a self-hosted clip. Named after wherever it was
+// first published, so the link says where it actually goes.
+const SOURCE_LABELS = [
+  ['instagram.com', 'Instagram'],
+  ['tiktok.com', 'TikTok'],
+  ['youtube.com', 'YouTube'],
+  ['youtu.be', 'YouTube'],
+  ['vimeo.com', 'Vimeo'],
+];
+
+function sourceLinkLabel(url) {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    const match = SOURCE_LABELS.find(([domain]) => host.includes(domain));
+    return match ? `Watch on ${match[1]}` : 'Watch the original';
+  } catch {
+    return 'Watch the original';
+  }
+}
+
 export default async function Page() {
   const { articles, photos } = await getContent();
 
@@ -42,11 +62,14 @@ export default async function Page() {
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-6">
             {photos.map((photo, idx) => {
               const isVideo = photo.type === 'video';
-              // Only a genuine embed URL routes to MediaEmbed. This used to fall
-              // back to photo.src, which meant an uploaded clip still counted as
-              // an embed and was played inside an iframe — the <video> branch
-              // below could never be reached.
-              const embedUrl = isVideo ? photo.embedUrl : null;
+              // Route on videoKind, not on the presence of a URL. This used to
+              // fall back to photo.src, so an uploaded clip still counted as an
+              // embed and was played inside an iframe — the <video> branch
+              // below could never be reached. Anything that is not explicitly
+              // an upload is treated as an embed, which keeps older records
+              // written before videoKind existed on their current path.
+              const isEmbed = isVideo && photo.videoKind !== 'upload' && Boolean(photo.embedUrl);
+              const sourceUrl = isVideo && !isEmbed ? photo.sourceUrl : null;
 
               return (
                 <div
@@ -54,27 +77,44 @@ export default async function Page() {
                   className="mb-4 sm:mb-6 break-inside-avoid"
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  {isVideo && embedUrl ? (
+                  {isEmbed ? (
                     // Every embed goes through one component that detects the
                     // platform from its URL and crops that platform's chrome,
                     // so anything added via Admin → Media fits in on its own.
-                    <MediaEmbed src={embedUrl} title={photo.alt || 'Embedded video'} />
+                    <MediaEmbed src={photo.embedUrl} title={photo.alt || 'Embedded video'} />
                   ) : isVideo ? (
                     // A clip we host ourselves. Safari refuses to play the
                     // third-party embeds, and this path has no third party in
                     // it. Height is left to the file: the browser already knows
                     // the intrinsic size, so unlike the embeds there is no
                     // aspect ratio to guess at and nothing to crop.
-                    <div className="relative rounded-2xl overflow-hidden bg-slate-900">
-                      <video
-                        src={photo.src}
-                        className="block w-full h-auto"
-                        controls
-                        playsInline
-                        preload="metadata"
-                      />
-                      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
-                    </div>
+                    <figure>
+                      <div className="relative rounded-2xl overflow-hidden bg-slate-900">
+                        <video
+                          src={photo.src}
+                          className="block w-full h-auto"
+                          controls
+                          playsInline
+                          preload="metadata"
+                        />
+                        <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
+                      </div>
+                      {sourceUrl && (
+                        <figcaption className="mt-2 px-1">
+                          <a
+                            href={sourceUrl}
+                            target="_blank"
+                            rel="noopener"
+                            className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-ocean-500 transition-colors"
+                          >
+                            {sourceLinkLabel(sourceUrl)}
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </figcaption>
+                      )}
+                    </figure>
                   ) : (
                     <div className="group relative aspect-[4/3] photo-aspect-4-3 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800">
                       <Image

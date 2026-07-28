@@ -105,6 +105,10 @@ export class DataStore {
       type: photo.type === 'video' ? 'video' : 'image',
       videoKind: photo.type === 'video' ? photo.videoKind ?? 'upload' : null,
       embedUrl: photo.type === 'video' ? photo.embedUrl ?? null : null,
+      // Where the clip was originally published. Only meaningful on an upload,
+      // where it becomes a "Watch on Instagram" link beside the player — the
+      // clip plays from our own storage, but still points back to the post.
+      sourceUrl: photo.type === 'video' ? photo.sourceUrl ?? null : null,
       storagePath: photo.storagePath ?? null,
       order,
       createdAt: FieldValue.serverTimestamp(),
