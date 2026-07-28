@@ -2,16 +2,18 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-// Renders any embedded video from the media store, cropping each platform's
-// chrome so only the video shows. Platform is detected from the URL, so
-// anything added through Admin → Media lands in the right branch on its own.
+// Renders each gallery item as the social post it actually is: the platform's
+// own embed, shown whole — avatar, handle, caption and like count included.
+// Platform is detected from the URL, so anything added through Admin → Media
+// lands in the right branch on its own.
+//
+// An earlier version cropped every platform's chrome away so only the video
+// band showed. That looked tidier but hid what these are, and the cropping
+// needed the media's aspect ratio, which the embed never tells us — so it was
+// inferred from the reported height and got it wrong often enough to slice the
+// chyron off news clips. Showing the whole post removes the guesswork.
 
-const PLACEHOLDER_ASPECT = '4 / 5';
 const MEASURE_TIMEOUT_MS = 4000;
-
-// The embed cards have a hairline border; bleeding a couple of pixels past each
-// edge keeps it outside the visible window.
-const EDGE_BLEED_PX = 2;
 
 function detectPlatform(url = '') {
   if (url.includes('instagram.com')) return 'instagram';
@@ -19,8 +21,8 @@ function detectPlatform(url = '') {
   return 'generic';
 }
 
-// Tracks the tile's own width — every crop below is derived from it, so it has
-// to follow resizes and column-count changes.
+// Tracks the tile's own width. Only TikTok needs it, but it has to follow
+// resizes and column-count changes.
 function useElementWidth() {
   const ref = useRef(null);
   const [width, setWidth] = useState(0);
@@ -40,38 +42,16 @@ function useElementWidth() {
 
 /* ---------------------------------------------------------------- Instagram */
 
-// Instagram's /embed stacks an avatar/username header, the media, then action
-// icons, a likes count and a "View more on Instagram" link. We want the media
-// band only.
-//
-// Subtracting a guessed footer height never works reliably — the footer grows
-// when a caption wraps. Instead we exploit the fact that Instagram re-crops all
-// feed media to a small set of aspect ratios: knowing the tile width, the media
-// height can only be one of a few values, so we snap to the closest. The chrome
-// estimate only has to be good enough to pick between candidates, not exact.
-//
-// 16:9 is in this list because reels cut for broadcast come back from the embed
-// in a true widescreen frame rather than one of the three feed-photo ratios.
-// Without it they snapped to 1.91 and the tile came out ~7% short, slicing the
-// chyron off the bottom of every news clip.
-const IG_MEDIA_ASPECTS = [1.91, 16 / 9, 1, 0.8]; // landscape, widescreen, square, portrait (w/h)
-const IG_PORTRAIT_ASPECT = 0.8;
-
-// Vertical video is shot 9:16 but Instagram shows feed posts in a 4:5 frame, so
-// it pillarboxes with black bars down either side. Those bars are part of what
-// the iframe renders, so cropping top/bottom can't reach them — instead the
-// iframe is drawn wider than the tile until the video spans it and the bars fall
-// outside. Set to IG_PORTRAIT_ASPECT to switch this off.
-const IG_PORTRAIT_VIDEO_ASPECT = 9 / 16;
-
-const IG_HEADER_PX = 54;
-const IG_CHROME_ESTIMATE_PX = 210; // header + footer, only used to pick a bucket
+// Instagram's embed is responsive and reports its rendered height back over
+// postMessage, so the only job here is to listen and match it. The height moves
+// with the caption, which is why it is taken from the embed rather than
+// calculated. Until it answers we hold a plausible height instead of
+// collapsing the tile and shifting the rest of the page when it arrives.
+const IG_FALLBACK_HEIGHT_PX = 640;
 
 function InstagramFrame({ src, title }) {
-  const [containerRef, width] = useElementWidth();
   const iframeRef = useRef(null);
   const [frameHeight, setFrameHeight] = useState(null);
-  const [aspect, setAspect] = useState(null);
   const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
@@ -103,56 +83,17 @@ function InstagramFrame({ src, title }) {
     };
   }, []);
 
-  // Locked in once decided: widening the iframe below changes the height
-  // Instagram reports, and re-deriving from that would feed back on itself.
-  useEffect(() => {
-    if (aspect !== null || !frameHeight || !width) return;
-
-    const approxMedia = frameHeight - IG_CHROME_ESTIMATE_PX;
-    setAspect(
-      IG_MEDIA_ASPECTS.reduce((best, candidate) =>
-        Math.abs(width / candidate - approxMedia) <
-        Math.abs(width / best - approxMedia)
-          ? candidate
-          : best
-      )
-    );
-  }, [frameHeight, width, aspect]);
-
-  const ready = aspect !== null && width > 0;
-  const isPortrait = aspect === IG_PORTRAIT_ASPECT;
-
-  const iframeWidth = ready
-    ? isPortrait
-      ? width * (IG_PORTRAIT_ASPECT / IG_PORTRAIT_VIDEO_ASPECT)
-      : width + EDGE_BLEED_PX * 2
-    : null;
-  const leftOffset = iframeWidth ? -(iframeWidth - width) / 2 : -EDGE_BLEED_PX;
-  const tileHeight = ready
-    ? Math.round(width / (isPortrait ? IG_PORTRAIT_VIDEO_ASPECT : aspect))
-    : null;
+  const measured = frameHeight ?? IG_FALLBACK_HEIGHT_PX;
 
   return (
-    <Tile
-      containerRef={containerRef}
-      style={ready ? { height: `${tileHeight}px` } : { aspectRatio: PLACEHOLDER_ASPECT }}
-    >
+    <Tile style={{ height: `${measured}px` }}>
       <iframe
         ref={iframeRef}
         src={src}
         title={title}
         scrolling="no"
-        className="absolute border-0 transition-opacity duration-300"
-        style={{
-          top: `-${IG_HEADER_PX}px`,
-          left: `${leftOffset}px`,
-          width: iframeWidth ? `${iframeWidth}px` : `calc(100% + ${EDGE_BLEED_PX * 2}px)`,
-          // Until the embed reports its height we can't know where the media
-          // ends, and guessing paints the iframe's white background into the
-          // gap — so stay hidden until there's a real number.
-          height: frameHeight ? `${frameHeight}px` : '640px',
-          opacity: ready || timedOut ? 1 : 0,
-        }}
+        className="absolute inset-0 w-full h-full border-0 transition-opacity duration-300"
+        style={{ opacity: frameHeight || timedOut ? 1 : 0 }}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
       />
@@ -162,44 +103,32 @@ function InstagramFrame({ src, title }) {
 
 /* ------------------------------------------------------------------- TikTok */
 
-// TikTok's embed does NOT reflow to the width you give it: its column is pinned
+// TikTok's embed does NOT reflow to the width you give it: its card is pinned
 // by the embed's own CSS to `width/min-width/max-width: 325px`. Render it in a
-// wider iframe and the column just sits centred with white either side, which is
-// why no crop value alone can clean it up. Instead the iframe is given exactly
-// that column width and the whole thing is scaled to the tile — the embed lays
-// itself out as TikTok intends, then we scale and crop.
+// wider iframe and the card just sits centred with white either side. So the
+// iframe is given exactly that width and the whole card is scaled to the tile —
+// the embed lays itself out as TikTok intends, then we scale it up bodily.
 //
-// Inside the column the video area is the first thing on the page, inset by the
-// card's 1px border, and is a true 9:16 box spanning the full column width. It
-// is NOT preceded by a header. Everything after it — the "Watch now" call to
-// action, then the author, caption and sound rows — is stacked *below* the
-// video, and its height moves with the caption, so it is cropped by sizing the
-// tile to the video alone rather than by subtracting a fixed footer.
-//
-// Measured against the live embed; all values are in the embed's own (unscaled)
-// pixels.
+// Measured against the live embed, in the embed's own (unscaled) pixels: the
+// video is a 9:16 box spanning the column, and the "Watch now" bar, author,
+// caption and sound rows stack beneath it.
 const TIKTOK_COLUMN_WIDTH = 325;
-const TIKTOK_BORDER_PX = 1;
-const TIKTOK_VIDEO_WIDTH = TIKTOK_COLUMN_WIDTH - TIKTOK_BORDER_PX * 2;
-const TIKTOK_VIDEO_ASPECT = 9 / 16;
-
-// Room for the chrome below the video so it can never be squeezed back up into
-// the video area. Only has to be generous — every pixel of it is cropped off.
-const TIKTOK_CHROME_BELOW_PX = 280;
+const TIKTOK_CARD_HEIGHT = 855;
 
 function TikTokFrame({ src, title }) {
   const [containerRef, width] = useElementWidth();
 
-  const naturalVideoHeight = TIKTOK_VIDEO_WIDTH / TIKTOK_VIDEO_ASPECT;
-  const naturalFrameHeight =
-    TIKTOK_BORDER_PX + naturalVideoHeight + TIKTOK_CHROME_BELOW_PX;
-  const scale = width ? width / TIKTOK_VIDEO_WIDTH : null;
-  const tileHeight = scale ? Math.round(naturalVideoHeight * scale) : null;
+  const scale = width ? width / TIKTOK_COLUMN_WIDTH : null;
+  const tileHeight = scale ? Math.round(TIKTOK_CARD_HEIGHT * scale) : null;
 
   return (
     <Tile
       containerRef={containerRef}
-      style={tileHeight ? { height: `${tileHeight}px` } : { aspectRatio: '9 / 16' }}
+      style={
+        tileHeight
+          ? { height: `${tileHeight}px` }
+          : { aspectRatio: `${TIKTOK_COLUMN_WIDTH} / ${TIKTOK_CARD_HEIGHT}` }
+      }
     >
       <iframe
         src={src}
@@ -208,12 +137,8 @@ function TikTokFrame({ src, title }) {
         className="absolute left-0 top-0 border-0"
         style={{
           width: `${TIKTOK_COLUMN_WIDTH}px`,
-          height: `${naturalFrameHeight}px`,
-          // Applied right-to-left: pull the card's border off the top and left
-          // first, then scale the video area up to fill the tile's width.
-          transform: scale
-            ? `scale(${scale}) translate(-${TIKTOK_BORDER_PX}px, -${TIKTOK_BORDER_PX}px)`
-            : undefined,
+          height: `${TIKTOK_CARD_HEIGHT}px`,
+          transform: scale ? `scale(${scale})` : undefined,
           transformOrigin: '0 0',
           opacity: scale ? 1 : 0,
         }}
@@ -246,11 +171,11 @@ function Tile({ containerRef, style, children }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden rounded-2xl bg-slate-900"
+      className="relative w-full overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800"
       style={style}
     >
       {children}
-      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
+      <div className="absolute inset-0 ring-1 ring-inset ring-slate-900/10 dark:ring-white/10 rounded-2xl pointer-events-none" />
     </div>
   );
 }
