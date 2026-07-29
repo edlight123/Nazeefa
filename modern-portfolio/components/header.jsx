@@ -2,10 +2,12 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+// Rooted at "/" rather than bare fragments so these keep reaching the homepage
+// sections from any other route.
 const NAV_LINKS = [
-  { href: '#photos', label: 'On camera' },
-  { href: '#work', label: 'Reporting' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/#photos', label: 'On camera' },
+  { href: '/#work', label: 'Articles' },
+  { href: '/#contact', label: 'Contact' },
 ];
 
 export default function Header() {

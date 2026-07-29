@@ -116,7 +116,7 @@ export default async function Page() {
 
       {/* --------------------------------------------- reporting & research */}
       <section className="max-w-6xl mx-auto container-px pt-20 lg:pt-24" id="work">
-        <h2 className="section-title">Reporting &amp; research</h2>
+        <h2 className="section-title">Articles</h2>
 
         <div className="mt-2">
           {articles.map((article) => (

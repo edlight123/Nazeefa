@@ -20,7 +20,7 @@ export default function Hero() {
       <h1 className="font-serif text-display-lg font-medium mt-4">Nazeefa Ahmed</h1>
 
       <p className="text-[clamp(15px,1.6vw,18px)] text-soft mt-3.5 max-w-[34em] leading-relaxed">
-        Multimedia business reporter covering the economy, on camera and in print.
+        Multimedia business reporter covering the economy, on camera and in writing.
       </p>
 
       <div className="flex flex-wrap rule-t rule-b mt-8">
